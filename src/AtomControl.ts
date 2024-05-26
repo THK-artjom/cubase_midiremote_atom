@@ -1,11 +1,11 @@
 import { Communication } from './Communication';
-import { Button } from './Button';
 import { Switch } from './Switch';
 import { TriggerPad } from './TriggerPad';
+import { Button } from './Button';
 
 export class AtomControl {
     /* left side */
-    public setup: Button;
+    public setup: Switch;
     public setLoop: Button;
 
     public editor: Button;
@@ -28,8 +28,8 @@ export class AtomControl {
     public select: Button;
     public zoom: Button;
 
-    public click: Switch;
-    public record: Switch;
+    public click: Button;
+    public record: Button;
     public start: Button;
     public stop: Button;
 
@@ -40,7 +40,7 @@ export class AtomControl {
     constructor(surface: MR_DeviceSurface, midiInput: MR_DeviceMidiInput, communication: Communication, btnHeight: number, btnWidth: number) {
 
         var labelSong = surface.makeLabelField(0, 2 + 0 * btnHeight, btnWidth, btnHeight)
-        this.setup = new Button(0, 2 + 1 * btnHeight, 86, surface, midiInput, communication, btnWidth, btnHeight)
+        this.setup = new Switch(0, 2 + 1 * btnHeight, 86, surface, midiInput, communication, btnWidth, btnHeight)
         labelSong.relateTo(this.setup.button)
         this.setLoop = new Button(0, 2 + 2 * btnHeight, 85, surface, midiInput, communication, btnWidth, btnHeight)
 
@@ -71,9 +71,9 @@ export class AtomControl {
         this.zoom = new Button(25, 2 + 6 * btnHeight, 104, surface, midiInput, communication, btnWidth, btnHeight)
 
         var labelTransport = surface.makeLabelField(25, 13 + 0 * btnHeight, btnWidth, btnHeight);
-        this.click = new Switch(25, 13 + 1 * btnHeight, 105, surface, midiInput, communication, btnWidth, btnHeight);
+        this.click = new Button(25, 13 + 1 * btnHeight, 105, surface, midiInput, communication, btnWidth, btnHeight);
         labelTransport.relateTo(this.click.button)
-        this.record = new Switch(25, 13 + 2 * btnHeight, 107, surface, midiInput, communication, btnWidth, btnHeight);
+        this.record = new Button(25, 13 + 2 * btnHeight, 107, surface, midiInput, communication, btnWidth, btnHeight);
         this.start = new Button(25, 13 + 3 * btnHeight, 109, surface, midiInput, communication, btnWidth, btnHeight);
         this.stop = new Button(25, 13 + 4 * btnHeight, 111, surface, midiInput, communication, btnWidth, btnHeight);
 
@@ -110,7 +110,8 @@ export class AtomControl {
         return pads
     }
 
-    /*private addShiftFunctionality() {
+    /*
+    private addShiftFunctionality() {
         var previousShift = this.shift.stateVariable.mOnProcessValueChange;
         this.shift.stateVariable.mOnProcessValueChange = function (activeDevice: MR_ActiveDevice, value: number) {
             previousShift(activeDevice, value);

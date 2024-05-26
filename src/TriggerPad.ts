@@ -5,12 +5,15 @@ export class TriggerPad {
     private red: MR_SurfaceCustomValueVariable;
     private green: MR_SurfaceCustomValueVariable;
     private blue: MR_SurfaceCustomValueVariable;
+    private state: MR_SurfaceCustomValueVariable;
+
     private communication: Communication;
     private note: number;
     private colors: Colors
+
     public pad: MR_TriggerPad
 
-    constructor(x: number, y: number, note: number, surface: MR_DeviceSurface, midiInput: MR_DeviceMidiInput, communication: Communication, triggerSize: number) {
+    constructor(x: number, y: number, private note: number, surface: MR_DeviceSurface, midiInput: MR_DeviceMidiInput, communication: Communication, triggerSize: number) {
         this.note = note;
         this.communication = communication;
         this.colors = new Colors();
@@ -22,22 +25,24 @@ export class TriggerPad {
             .bindToNote(0, note); //chanel 10 (id:9) C1 = 36
         console.log('created binding to note: ' + note);
 
-        var red = surface.makeCustomValueVariable('pad ' + note + ' red');
-        var green = surface.makeCustomValueVariable('pad ' + note + ' green');
-        var blue = surface.makeCustomValueVariable('pad ' + note + ' blue');
-        var state = surface.makeCustomValueVariable('pad ' + note + ' value');
+        this.red = surface.makeCustomValueVariable('pad ' + note + ' red');
+        this.green = surface.makeCustomValueVariable('pad ' + note + ' green');
+        this.blue = surface.makeCustomValueVariable('pad ' + note + ' blue');
+        this.state = surface.makeCustomValueVariable('pad ' + note + ' value');
 
-        this.pad.mSurfaceValue.mOnProcessValueChange = function (activeDevice: MR_ActiveDevice, value: number, diff: number) {
-            console.log('Pad ' + note + ' value' + value);
-            state.setProcessValue(activeDevice, value);
-            if (value)
-                this.setTriggerPadColor(note, [red.getProcessValue(activeDevice), green.getProcessValue(activeDevice), blue.getProcessValue(activeDevice)], activeDevice);
-            else if (value > 0
-                && value < 60)
-                this.setTriggerPadColor(note, this.colors.buttonPress, activeDevice);
-            else if (value >= 60)
-                this.setTriggerPadColor(note, this.colors.white, activeDevice);
-        };
+        this.pad.mSurfaceValue.mOnProcessValueChange = this.onProcessValueChange.bind({});
+    }
+
+    private onProcessValueChange: (activeDevice: MR_ActiveDevice, value: number, diff: number) => void = (activeDevice, value, diff) => {
+        console.log('Pad ' + this.note + ' value' + value);
+        this.state.setProcessValue(activeDevice, value);
+        if (value)
+            this.setTriggerPadColor(this.note, [this.red.getProcessValue(activeDevice), this.green.getProcessValue(activeDevice), this.blue.getProcessValue(activeDevice)], activeDevice);
+        else if (value > 0
+            && value < 60)
+            this.setTriggerPadColor(this.note, this.colors.buttonPress, activeDevice);
+        else if (value >= 60)
+            this.setTriggerPadColor(this.note, this.colors.white, activeDevice);
     }
 
     public toggleColor(rgb: [number, number, number], activeDevice: MR_ActiveDevice) {
