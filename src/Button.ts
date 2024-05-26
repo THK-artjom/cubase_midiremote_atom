@@ -1,5 +1,5 @@
 export class Button {
-    private readonly stateVariable: MR_SurfaceCustomValueVariable;
+    public stateVariable: MR_SurfaceCustomValueVariable;
     private readonly shiftVariable: MR_SurfaceCustomValueVariable;
     private readonly shiftActive: MR_SurfaceCustomValueVariable;
 
@@ -19,12 +19,14 @@ export class Button {
     }
 
     private onProcessValueChange: (activeDevice: MR_ActiveDevice, value: number, diff: number) => void = (activeDevice, value) => {
-        console.log("button cmd: " + this.command + " value " + value);
         if (this.shiftActive.getProcessValue(activeDevice)) {
+            console.log("button shifted cmd: " + this.command + " value " + value);
             this.shiftVariable.setProcessValue(activeDevice, value);
         }
-        else
+        else {
+            console.log("button cmd: " + this.command + " value " + value);
             this.stateVariable.setProcessValue(activeDevice, value);
+        }
     }
 
     public shift(activeDevice: MR_ActiveDevice) {
@@ -33,15 +35,5 @@ export class Button {
 
     public unShift(activeDevice: MR_ActiveDevice) {
         this.shiftActive.setProcessValue(activeDevice, 0);
-    }
-
-    public subscribeToClick(subscriber: (activeDevice: MR_ActiveDevice, value: number, diff: number) => any) {
-        console.log("Adding command binding to button: " + this.command)
-        var previousBind = this.button.mSurfaceValue.mOnProcessValueChange;
-
-        this.button.mSurfaceValue.mOnProcessValueChange = (activeDevice: MR_ActiveDevice, value: number, diff: number) => {
-            previousBind(activeDevice, value, diff);
-            subscriber(activeDevice, value, diff);
-        };//.bind({});
     }
 }
