@@ -6,10 +6,10 @@ import { Button } from './Button';
 export class AtomControl {
     /* left side */
     public setup: Switch;
-    public setLoop: Button;
+    public setLoop: Switch;
 
-    public editor: Button;
-    public nudge: Button;
+    public editor: Switch;
+    public nudge: Switch;
 
     public showHide: Button;
     public preset: Button;
@@ -26,12 +26,12 @@ export class AtomControl {
     public left: Button;
     public right: Button;
     public select: Button;
-    public zoom: Button;
+    public zoom: Switch;
 
-    public click: Button;
-    public record: Button;
-    public start: Button;
-    public stop: Button;
+    public click: Switch;
+    public record: Switch;
+    public start: Switch;
+    public stop: Switch;
 
     public pads: TriggerPad[] = new Array(16);
 
@@ -42,12 +42,12 @@ export class AtomControl {
         var labelSong = surface.makeLabelField(0, 2 + 0 * btnHeight, btnWidth, btnHeight)
         this.setup = new Switch(0, 2 + 1 * btnHeight, 86, surface, midiInput, communication, btnWidth, btnHeight)
         labelSong.relateTo(this.setup.button)
-        this.setLoop = new Button(0, 2 + 2 * btnHeight, 85, surface, midiInput, communication, btnWidth, btnHeight)
+        this.setLoop = new Switch(0, 2 + 2 * btnHeight, 85, surface, midiInput, communication, btnWidth, btnHeight)
 
         var labelEvent = surface.makeLabelField(0, 7 + 0 * btnHeight, btnWidth, btnHeight)
-        this.editor = new Button(0, 7 + 1 * btnHeight, 31, surface, midiInput, communication, btnWidth, btnHeight)
+        this.editor = new Switch(0, 7 + 1 * btnHeight, 31, surface, midiInput, communication, btnWidth, btnHeight)
         labelEvent.relateTo(this.editor.button)
-        this.nudge = new Button(0, 7 + 2 * btnHeight, 30, surface, midiInput, communication, btnWidth, btnHeight)
+        this.nudge = new Switch(0, 7 + 2 * btnHeight, 30, surface, midiInput, communication, btnWidth, btnHeight)
 
         var labelInst = surface.makeLabelField(0, 12 + 0 * btnHeight, btnWidth, btnHeight)
         this.showHide = new Button(0, 12 + 1 * btnHeight, 29, surface, midiInput, communication, btnWidth, btnHeight)
@@ -68,14 +68,14 @@ export class AtomControl {
         this.left = new Button(25, 2 + 3 * btnHeight, 90, surface, midiInput, communication, btnWidth, btnHeight)
         this.right = new Button(25, 2 + 4 * btnHeight, 102, surface, midiInput, communication, btnWidth, btnHeight)
         this.select = new Button(25, 2 + 5 * btnHeight, 103, surface, midiInput, communication, btnWidth, btnHeight)
-        this.zoom = new Button(25, 2 + 6 * btnHeight, 104, surface, midiInput, communication, btnWidth, btnHeight)
+        this.zoom = new Switch(25, 2 + 6 * btnHeight, 104, surface, midiInput, communication, btnWidth, btnHeight)
 
         var labelTransport = surface.makeLabelField(25, 13 + 0 * btnHeight, btnWidth, btnHeight);
-        this.click = new Button(25, 13 + 1 * btnHeight, 105, surface, midiInput, communication, btnWidth, btnHeight);
+        this.click = new Switch(25, 13 + 1 * btnHeight, 105, surface, midiInput, communication, btnWidth, btnHeight);
         labelTransport.relateTo(this.click.button)
-        this.record = new Button(25, 13 + 2 * btnHeight, 107, surface, midiInput, communication, btnWidth, btnHeight);
-        this.start = new Button(25, 13 + 3 * btnHeight, 109, surface, midiInput, communication, btnWidth, btnHeight);
-        this.stop = new Button(25, 13 + 4 * btnHeight, 111, surface, midiInput, communication, btnWidth, btnHeight);
+        this.record = new Switch(25, 13 + 2 * btnHeight, 107, surface, midiInput, communication, btnWidth, btnHeight);
+        this.start = new Switch(25, 13 + 3 * btnHeight, 109, surface, midiInput, communication, btnWidth, btnHeight);
+        this.stop = new Switch(25, 13 + 4 * btnHeight, 111, surface, midiInput, communication, btnWidth, btnHeight);
 
         this.pads = this.makeTriggers(36, 7, 10, btnHeight, btnWidth, surface, midiInput, communication);
 

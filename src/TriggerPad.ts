@@ -8,7 +8,6 @@ export class TriggerPad {
     private state: MR_SurfaceCustomValueVariable;
 
     private communication: Communication;
-    private note: number;
     private colors: Colors
 
     public pad: MR_TriggerPad
@@ -34,9 +33,10 @@ export class TriggerPad {
     }
 
     private onProcessValueChange: (activeDevice: MR_ActiveDevice, value: number, diff: number) => void = (activeDevice, value, diff) => {
+        value *= 100;
         console.log('Pad ' + this.note + ' value' + value);
         this.state.setProcessValue(activeDevice, value);
-        if (value)
+        if (value <= 0)
             this.setTriggerPadColor(this.note, [this.red.getProcessValue(activeDevice), this.green.getProcessValue(activeDevice), this.blue.getProcessValue(activeDevice)], activeDevice);
         else if (value > 0
             && value < 60)
