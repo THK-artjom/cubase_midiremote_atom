@@ -5,7 +5,8 @@ export class Switch {
     private readonly stateVariable: MR_SurfaceCustomValueVariable;
     private readonly shiftVariable: MR_SurfaceCustomValueVariable;
     private readonly shiftActive: MR_SurfaceCustomValueVariable;
-    public readonly button: MR_Button;
+    
+    public readonly button: MR_Button; //only for the relate to
 
     constructor(x: number, y: number, private command: number, surface: MR_DeviceSurface, midiInput: MR_DeviceMidiInput, private communication: Communication, btnWidth: number, btnHeight: number) {
         this.stateVariable = surface.makeCustomValueVariable('button cc ' + command);

@@ -112,9 +112,7 @@ export class AtomControl {
 
     /*
     private addShiftFunctionality() {
-        var previousShift = this.shift.stateVariable.mOnProcessValueChange;
-        this.shift.stateVariable.mOnProcessValueChange = function (activeDevice: MR_ActiveDevice, value: number) {
-            previousShift(activeDevice, value);
+        this.shift.subscribeToClick((activeDevice, value, diff) => {
             if (value) {
                 this.nudge.shift(activeDevice);
 
@@ -124,13 +122,13 @@ export class AtomControl {
                 this.stop.shift(activeDevice);
             }
             else {
-                this.nudge.unshift(activeDevice);
+                this.nudge.unShift(activeDevice);
 
-                this.click.unshift(activeDevice);
-                this.record.unshift(activeDevice);
-                this.start.unshift(activeDevice);
-                this.stop.unshift(activeDevice);
+                this.click.unShift(activeDevice);
+                this.record.unShift(activeDevice);
+                this.start.unShift(activeDevice);
+                this.stop.unShift(activeDevice);
             }
-        }
+        });
     }*/
 }

@@ -10,7 +10,7 @@ export class TriggerPad {
     private communication: Communication;
     private colors: Colors
 
-    public pad: MR_TriggerPad
+    public pad: MR_TriggerPad //only for the relate to
 
     constructor(x: number, y: number, private note: number, surface: MR_DeviceSurface, midiInput: MR_DeviceMidiInput, communication: Communication, triggerSize: number) {
         this.note = note;
