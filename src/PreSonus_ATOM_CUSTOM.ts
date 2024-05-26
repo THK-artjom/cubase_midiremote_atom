@@ -23,22 +23,14 @@ var surface = deviceDriver.mSurface
 
 var communication = new Communication(midiOutput);
 
-/**
- * @param {boolean} state
- * @param {MR_ActiveDevice} activeDevice
- */
-function toggleStartButton(state, activeDevice) {
+function toggleStartButton(state: number, activeDevice: MR_ActiveDevice) {
     if (state)
         communication.sendMidiControlChange(1, 109, 127, activeDevice)
     else
         communication.sendMidiControlChange(1, 109, 0, activeDevice)
 }
 
-/**
- * @param {boolean} state
- * @param {MR_ActiveDevice} activeDevice
- */
-function toggleStopButton(state, activeDevice) {
+function toggleStopButton(state: number, activeDevice: MR_ActiveDevice) {
     if (state)
         communication.sendMidiControlChange(1, 111, 127, activeDevice)
     else
@@ -52,12 +44,7 @@ function toggleStopButton(state, activeDevice) {
 var btnWidth = 3
 var btnHeight = 1.5
 
-/**
- * @param {number} firstKnobChanel
- * @param {number} x
- * @param {number} y
- */
-function makeKnobStrip(firstKnobChanel, x, y) {
+function makeKnobStrip(firstKnobChanel: number, x: number, y: number) {
     var knobStrip = []
     var knobSize = 1.2 * btnWidth
 
@@ -85,11 +72,7 @@ var surfaceElements = makeSurfaceElements()
 // 3. HOST MAPPING - create mapping pages and host bindings
 //----------------------------------------------------------------------------------------------------------------------
 
-
-/**
- * @param {MR_FactoryMappingPage} page
- */
-function subscribeTransportFunctions(page) {
+function subscribeTransportFunctions(page: MR_FactoryMappingPage) {
 
     /* feedback cubase -> btn colors */
     page.makeValueBinding(atom.start.stateVariable, page.mHostAccess.mTransport.mValue.mStart)
@@ -144,10 +127,7 @@ function subscribeTransportFunctions(page) {
     */
 }
 
-/**
- * @param {MR_FactoryMappingPage} page
- */
-function subscribeNavigationFunctions(page) {
+function subscribeNavigationFunctions(page: MR_FactoryMappingPage) {
     page.makeCommandBinding(atom.left.stateVariable, 'Navigate', 'Left')
     page.makeCommandBinding(atom.right.stateVariable, 'Navigate', 'Right')
     page.makeCommandBinding(atom.down.stateVariable, 'Navigate', 'Down')
@@ -213,7 +193,7 @@ function subscribeNavigationFunctions(page) {
 /**
  * @param {MR_FactoryMappingPage} page
  */
-function subscribeTrackSetup(page) {
+function subscribeTrackSetup(page: MR_FactoryMappingPage) {
     /* page.makeCommandBinding(atom.pads[0].tapTempo, 'Project', 'Tap Tempo') //doesnt work
      page.makeCommandBinding(surfaceElements.song.tempo, 'Transport', 'Input Tempo') //doesnt work
      page.makeCommandBinding(surfaceElements.song.delete, 'Edit', 'Delete') //doesnt work
@@ -279,10 +259,7 @@ function subscribeTrackSetup(page) {
     /* *************  */
 }
 
-/**
- * @param {string} name
- */
-function makePageWithDefaults(name) {
+function makePageWithDefaults(name: string) {
     var page = deviceDriver.mMapping.makePage(name)
     subscribeNavigationFunctions(page)
     subscribeTransportFunctions(page)
@@ -305,25 +282,20 @@ function makePageMixer() {
 // Switch nanoKONTROL to expected mode
 //----------------------------------------------------------------------------------------------------------------------
 
-/**
- * @param {MR_ActiveDevice} activeDevice
- */
-function setNativeMidiMode(activeDevice) {
+function setNativeMidiMode(activeDevice: MR_ActiveDevice) {
     console.log("ATOM activate native Midi Mode")
     communication.sendMidiNoteOff(16, 0, 127, activeDevice)
     //TODO trigger pad chanel is now 0
 }
 
-/**
- * @param {MR_ActiveDevice} activeDevice
- */
-function setDefaultMidiMode(activeDevice) {
+
+function setDefaultMidiMode(activeDevice: MR_ActiveDevice) {
     console.log("ATOM activate default Midi Mode")
     communication.sendMidiNoteOff(16, 0, 0, activeDevice)
     //TODO trigger pad chanel is now 10 (id:9)
 }
 
-deviceDriver.mOnActivate = function (/** @type {any} */ activeDevice) {
+deviceDriver.mOnActivate = function (activeDevice: MR_ActiveDevice) {
     console.log('Your PreSonus ATOM has been detected.')
     setNativeMidiMode(activeDevice)
 }

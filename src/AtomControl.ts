@@ -79,7 +79,7 @@ export class AtomControl {
 
         this.pads = this.makeTriggers(36, 7, 10, btnHeight, btnWidth, surface, midiInput, communication);
 
-        this.addShiftFunctionality();
+        //this.addShiftFunctionality();
     }
 
     private makeTriggers(startCC: number, x: number, y: number, btnHeight: number, btnWidth: number, surface: MR_DeviceSurface, midiInput: MR_DeviceMidiInput, communication: Communication): TriggerPad[] {
@@ -110,7 +110,7 @@ export class AtomControl {
         return pads
     }
 
-    private addShiftFunctionality() {
+    /*private addShiftFunctionality() {
         var previousShift = this.shift.stateVariable.mOnProcessValueChange;
         this.shift.stateVariable.mOnProcessValueChange = function (activeDevice: MR_ActiveDevice, value: number) {
             previousShift(activeDevice, value);
@@ -131,5 +131,5 @@ export class AtomControl {
                 this.stop.unshift(activeDevice);
             }
         }
-    }
+    }*/
 }
