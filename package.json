@@ -1,0 +1,39 @@
+{
+  "name": "cubase-mcu-midiremote",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "build": "tsup",
+    "start": "tsup --watch",
+    "tsc": "tsc",
+    "postversion": "npm run build",
+    "postinstall": "patch-package"
+  },
+  "author": "bjoluc",
+  "license": "MIT",
+  "dependencies": {
+    "abbreviate": "0.0.3",
+    "color-diff": "1.4.0",
+    "core-js": "3.35.0"
+  },
+  "devDependencies": {
+    "@bjoluc/semantic-release-config-npm": "^1.0.1",
+    "@swc/core": "^1.5.7",
+    "@types/node": "^20.10.8",
+    "dotenv": "^16.3.1",
+    "execa": "^8.0.1",
+    "jest-docblock": "^29.7.0",
+    "patch-package": "^8.0.0",
+    "tsup": "^8.0.1",
+    "type-fest": "^4.9.0",
+    "typescript": "^5.3.3"
+  },
+  "babel": {
+    "presets": [
+      "@babel/preset-env"
+    ]
+  },
+  "prettier": {
+    "printWidth": 100
+  }
+}
