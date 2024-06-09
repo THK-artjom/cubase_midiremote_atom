@@ -30,7 +30,7 @@ export class AtomControl {
     public zoom: Button;
 
     public click: Switch;
-    public record: Button;
+    public record: Switch;
     public start: Button;
     public stop: Button;
 
@@ -71,9 +71,9 @@ export class AtomControl {
         this.zoom = new Button(25, 2 + 6 * this.btnHeight, 104, surface, communication, this.btnWidth, this.btnHeight)
 
         var labelTransport = this.surface.makeLabelField(25, 13 + 0 * this.btnHeight, this.btnWidth, this.btnHeight);
-        this.click = new Switch(25, 13 + 1 * this.btnHeight, 105, surface, communication, this.btnWidth, this.btnHeight);
+        this.click = new Switch(25, 13 + 1 * this.btnHeight, 105, surface, communication, this.btnWidth, this.btnHeight, true);
         //labelTransport.relateTo(this.click.button) //todo add relates to later
-        this.record = new Button(25, 13 + 2 * this.btnHeight, 107, surface, communication, this.btnWidth, this.btnHeight);
+        this.record = new Switch(25, 13 + 2 * this.btnHeight, 107, surface, communication, this.btnWidth, this.btnHeight, false);
         this.start = new Button(25, 13 + 3 * this.btnHeight, 109, surface, communication, this.btnWidth, this.btnHeight);
         this.stop = new Button(25, 13 + 4 * this.btnHeight, 111, surface, communication, this.btnWidth, this.btnHeight);
 

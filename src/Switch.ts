@@ -11,7 +11,7 @@ export class Switch {
 
     private readonly button: MR_Button;
 
-    constructor(x: number, y: number, private command: number, surface: MR_DeviceSurface, private communication: Communication, btnWidth: number, btnHeight: number) {
+    constructor(x: number, y: number, private command: number, surface: MR_DeviceSurface, private communication: Communication, btnWidth: number, btnHeight: number, private isShiftLatching: boolean) {
         this.click = surface.makeCustomValueVariable('button cc ' + command);
         this.shiftClick = surface.makeCustomValueVariable('button cc ' + command + 'shift');
         this.shiftActive = surface.makeCustomValueVariable('button cc ' + command + 'shiftActive');
@@ -41,10 +41,11 @@ export class Switch {
             console.log("shifted switch " + this.command + " value " + value);
             this.shiftClick.setProcessValue(activeDevice, 127);
 
-            if (this.shiftState.getProcessValue(activeDevice)) {
+            if (this.shiftState.getProcessValue(activeDevice)
+                && this.isShiftLatching == false) {
                 this.shiftState.setProcessValue(activeDevice, 0);
             }
-            else {
+            else if (this.isShiftLatching == false) {
                 this.shiftState.setProcessValue(activeDevice, 127);
             }
         }
@@ -65,6 +66,12 @@ export class Switch {
 
     private setState(activeDevice: MR_ActiveDevice) {
         if (this.shiftActive.getProcessValue(activeDevice)) {
+
+            if (this.isShiftLatching == false) {
+                this.buttonLampOn(activeDevice);
+                return;
+            }
+
             if (this.shiftState.getProcessValue(activeDevice)) {
                 this.buttonLampOn(activeDevice);
             }

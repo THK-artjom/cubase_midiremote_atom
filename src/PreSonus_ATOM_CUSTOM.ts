@@ -50,10 +50,12 @@ var helperVariables = makeHelperVariables();
 function subscribeTransportFunctions(page: MR_FactoryMappingPage, mainPage: MR_SubPage, shiftPage: MR_SubPage) {
 
     /* feedback cubase -> btn colors */
-    page.makeCommandBinding(atom.click.click, 'Transport', 'Metronome On').setSubPage(mainPage);
-    page.makeValueBinding(atom.click.clickState, page.mHostAccess.mTransport.mValue.mMetronomeActive).setSubPage(mainPage);
+    page.makeCommandBinding(atom.click.click, 'Transport', 'Metronome On');
+    page.makeValueBinding(atom.click.clickState, page.mHostAccess.mTransport.mValue.mMetronomeActive);
 
-    page.makeValueBinding(atom.record.button.mSurfaceValue, page.mHostAccess.mTransport.mValue.mRecord).setTypeToggle().setSubPage(mainPage);
+    page.makeCommandBinding(atom.record.click, 'Transport', 'Record');
+    page.makeValueBinding(atom.record.clickState, page.mHostAccess.mTransport.mValue.mRecord);
+
     page.makeCommandBinding(atom.start.button.mSurfaceValue, 'Transport', 'Start').setSubPage(mainPage);
     page.makeCommandBinding(atom.stop.button.mSurfaceValue, 'Transport', 'Stop').setSubPage(mainPage);
 
@@ -61,7 +63,7 @@ function subscribeTransportFunctions(page: MR_FactoryMappingPage, mainPage: MR_S
     page.makeCommandBinding(atom.click.shiftClick, 'Transport', 'Precount On').setSubPage(shiftPage);
     page.makeCommandBinding(atom.start.button.mSurfaceValue, 'Transport', 'Cycle').setSubPage(shiftPage);
     page.makeCommandBinding(atom.stop.button.mSurfaceValue, 'Edit', 'Undo').setSubPage(shiftPage);
-    page.makeCommandBinding(atom.record.button.mSurfaceValue, 'File', 'Save').setSubPage(shiftPage);
+    page.makeCommandBinding(atom.record.shiftClick, 'File', 'Save').setSubPage(shiftPage);
 
     page.makeCommandBinding(helperVariables.jogLeft, 'Transport', 'Nudge -1 Frame');
     page.makeCommandBinding(helperVariables.jogRight, 'Transport', 'Nudge +1 Frame');
@@ -223,16 +225,15 @@ function makePageWithDefaults(name: string) {
     shiftPage.mOnActivate = function (activeDevice: ActiveDevice, activeMapping: ActiveMapping) {
         console.log("shift page activated");
         atom.shift.buttonLampOn(activeDevice);
-        //atom.record.buttonLampOn(activeDevice);
-        //atom.start.buttonLampOn(activeDevice);
-        //atom.stop.buttonLampOn(activeDevice);
         atom.click.shift(activeDevice);
+        atom.record.shift(activeDevice);
     }
 
     mainPage.mOnActivate = function (activeDevice: ActiveDevice, activeMapping: ActiveMapping) {
         console.log("main page activated");
         atom.shift.buttonLampOff(activeDevice);
         atom.click.unShift(activeDevice);
+        atom.record.unShift(activeDevice);
     }
 
     page.makeActionBinding(atom.shift.button.mSurfaceValue, shiftPage.mAction.mActivate).setSubPage(mainPage);
