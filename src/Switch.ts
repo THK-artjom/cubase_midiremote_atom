@@ -7,7 +7,7 @@ export class Switch {
 
     private readonly shiftActive: MR_SurfaceCustomValueVariable;
     public readonly clickState: MR_SurfaceCustomValueVariable;
-    private readonly shiftState: MR_SurfaceCustomValueVariable;
+    public readonly shiftState: MR_SurfaceCustomValueVariable;
 
     private readonly button: MR_Button;
 
@@ -23,6 +23,7 @@ export class Switch {
 
         this.button.mSurfaceValue.mOnProcessValueChange = this.onProcessValueChanged.bind({});
         this.clickState.mOnProcessValueChange = this.onStateChanged.bind({});
+        this.shiftState.mOnProcessValueChange = this.onShiftStateChanged.bind({});
     }
 
     private buttonLampOn(activeDevice: MR_ActiveDevice) {
@@ -103,6 +104,23 @@ export class Switch {
             else {
                 this.buttonLampOff(activeDevice);
             }
+        }
+    }
+
+    private onShiftStateChanged: (activeDevice: MR_ActiveDevice, value: number, diff: number) => void = (activeDevice, value, diff) => {
+
+        if (this.shiftActive.getProcessValue(activeDevice)) {
+            console.log("shifted switch " + this.command + " value " + value);
+            if (value) {
+                this.buttonLampOn(activeDevice);
+            }
+            else {
+                this.buttonLampOff(activeDevice);
+            }
+        }
+        else {
+            console.log("switch " + this.command + " value " + value);
+            return;
         }
     }
 

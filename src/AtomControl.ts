@@ -31,8 +31,8 @@ export class AtomControl {
 
     public click: Switch;
     public record: Switch;
-    public start: Button;
-    public stop: Button;
+    public start: Switch;
+    public stop: Switch;
 
     public pads: TriggerPad[] = new Array(16);
     public knobs: Knob[] = new Array(4);
@@ -74,8 +74,8 @@ export class AtomControl {
         this.click = new Switch(25, 13 + 1 * this.btnHeight, 105, surface, communication, this.btnWidth, this.btnHeight, true);
         //labelTransport.relateTo(this.click.button) //todo add relates to later
         this.record = new Switch(25, 13 + 2 * this.btnHeight, 107, surface, communication, this.btnWidth, this.btnHeight, false);
-        this.start = new Button(25, 13 + 3 * this.btnHeight, 109, surface, communication, this.btnWidth, this.btnHeight);
-        this.stop = new Button(25, 13 + 4 * this.btnHeight, 111, surface, communication, this.btnWidth, this.btnHeight);
+        this.start = new Switch(25, 13 + 3 * this.btnHeight, 109, surface, communication, this.btnWidth, this.btnHeight, true);
+        this.stop = new Switch(25, 13 + 4 * this.btnHeight, 111, surface, communication, this.btnWidth, this.btnHeight, false);
 
         this.pads = this.makeTriggers(36, 7, 10);
         this.knobs = this.makeKnobStrip(14, 5, 5);
