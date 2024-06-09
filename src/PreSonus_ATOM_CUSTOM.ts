@@ -47,9 +47,8 @@ var helperVariables = makeHelperVariables();
 // 3. HOST MAPPING - create mapping pages and host bindings
 //----------------------------------------------------------------------------------------------------------------------
 
-function subscribeTransportFunctions(page: MR_FactoryMappingPage, mainPage: MR_SubPage, shiftPage: MR_SubPage) {
+function subscribeTransportFunctions(page: MR_FactoryMappingPage) {
 
-    /* feedback cubase -> btn colors */
     page.makeCommandBinding(atom.click.click, 'Transport', 'Metronome On');
     page.makeValueBinding(atom.click.clickState, page.mHostAccess.mTransport.mValue.mMetronomeActive);
 
@@ -57,44 +56,23 @@ function subscribeTransportFunctions(page: MR_FactoryMappingPage, mainPage: MR_S
     page.makeValueBinding(atom.record.clickState, page.mHostAccess.mTransport.mValue.mRecord);
 
     page.makeCommandBinding(atom.start.click, 'Transport', 'Start');
-    page.makeValueBinding(atom.start.clickState, page.mHostAccess.mTransport.mValue.mStart);
+    page.makeValueBinding(atom.start.clickState, page.mHostAccess.mTransport.mValue.mStart).mOnValueChange = function (activeDevice : MR_ActiveDevice, activeMapping : MR_ActiveMapping, currValue : number, valueDiff : number){
+        console.log("transport start val test: " + currValue)
+    };
 
     page.makeCommandBinding(atom.stop.click, 'Transport', 'Stop');
     page.makeValueBinding(atom.stop.clickState, page.mHostAccess.mTransport.mValue.mStop);
 
-    /* command binding atom -> cubase */
-    page.makeCommandBinding(atom.click.shiftClick, 'Transport', 'Precount On').setSubPage(shiftPage);
+    page.makeCommandBinding(atom.click.shiftClick, 'Transport', 'Precount On');
 
-    page.makeCommandBinding(atom.start.shiftClick, 'Transport', 'Cycle').setSubPage(shiftPage);
+    page.makeCommandBinding(atom.start.shiftClick, 'Transport', 'Cycle');
     page.makeValueBinding(atom.start.shiftState, page.mHostAccess.mTransport.mValue.mCycleActive);
 
-    page.makeCommandBinding(atom.stop.shiftClick, 'Edit', 'Undo').setSubPage(shiftPage);
-    page.makeCommandBinding(atom.record.shiftClick, 'File', 'Save').setSubPage(shiftPage);
+    page.makeCommandBinding(atom.stop.shiftClick, 'Edit', 'Undo');
+    page.makeCommandBinding(atom.record.shiftClick, 'File', 'Save');
 
     page.makeCommandBinding(helperVariables.jogLeft, 'Transport', 'Nudge -1 Frame');
     page.makeCommandBinding(helperVariables.jogRight, 'Transport', 'Nudge +1 Frame');
-
-    /*page.mHostAccess.mTransport.mValue.mStart.onProcessValueChange = function (activeDevice: MR_ActiveDevice, value: number, diff: number) {
-        console.log("Cubase stared playing: " + value);
-
-        if (value) {
-            atom.start.buttonLampOff(activeDevice);
-        }
-        else {
-            atom.start.buttonLampOn(activeDevice);
-        }
-    }
-
-    page.mHostAccess.mTransport.mValue.mStop.onProcessValueChange = function (activeDevice: MR_ActiveDevice, value: number, diff: number) {
-        console.log("Cubase stopped playing: " + value);
-
-        if (value) {
-            atom.stop.buttonLampOn(activeDevice);
-        }
-        else {
-            atom.stop.buttonLampOff(activeDevice);
-        }
-    }*/
 }
 
 function subscribeNavigationFunctions(page: MR_FactoryMappingPage, mainPage: MR_SubPage, nudgePage: MR_SubPage) {
@@ -151,9 +129,6 @@ function subscribeNavigationFunctions(page: MR_FactoryMappingPage, mainPage: MR_
     }
 }
 
-/**
- * @param {MR_FactoryMappingPage} page
- */
 function subscribeTrackSetup(page: MR_FactoryMappingPage) {
     /* page.makeCommandBinding(atom.pads[0].tapTempo, 'Project', 'Tap Tempo') //doesnt work
      page.makeCommandBinding(surfaceElements.song.tempo, 'Transport', 'Input Tempo') //doesnt work

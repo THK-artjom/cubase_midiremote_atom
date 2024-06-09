@@ -43,10 +43,10 @@ export class Switch {
             this.shiftClick.setProcessValue(activeDevice, 127);
 
             if (this.shiftState.getProcessValue(activeDevice)
-                && this.isShiftLatching == false) {
+                && this.isShiftLatching) {
                 this.shiftState.setProcessValue(activeDevice, 0);
             }
-            else if (this.isShiftLatching == false) {
+            else if (this.isShiftLatching) {
                 this.shiftState.setProcessValue(activeDevice, 127);
             }
         }
