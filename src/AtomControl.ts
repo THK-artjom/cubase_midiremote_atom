@@ -6,11 +6,11 @@ import { Knob } from './Knob';
 
 export class AtomControl {
     /* left side */
-    public setup: Switch;
-    public setLoop: Switch;
+    public setup: Button;
+    public setLoop: Button;
 
-    public editor: Switch;
-    public nudge: Switch;
+    public editor: Button;
+    public nudge: Button;
 
     public showHide: Button;
     public preset: Button;
@@ -27,12 +27,12 @@ export class AtomControl {
     public left: Button;
     public right: Button;
     public select: Button;
-    public zoom: Switch;
+    public zoom: Button;
 
     public click: Switch;
-    public record: Switch;
-    public start: Switch;
-    public stop: Switch;
+    public record: Button;
+    public start: Button;
+    public stop: Button;
 
     public pads: TriggerPad[] = new Array(16);
     public knobs: Knob[] = new Array(4);
@@ -40,14 +40,14 @@ export class AtomControl {
     constructor(private surface: MR_DeviceSurface, private communication: Communication, private btnHeight: number, private btnWidth: number) {
 
         var labelSong = this.surface.makeLabelField(0, 2 + 0 * this.btnHeight, this.btnWidth, this.btnHeight)
-        this.setup = new Switch(0, 2 + 1 * this.btnHeight, 86, surface, communication, this.btnWidth, this.btnHeight)
+        this.setup = new Button(0, 2 + 1 * this.btnHeight, 86, surface, communication, this.btnWidth, this.btnHeight)
         labelSong.relateTo(this.setup.button)
-        this.setLoop = new Switch(0, 2 + 2 * this.btnHeight, 85, surface, communication, this.btnWidth, this.btnHeight)
+        this.setLoop = new Button(0, 2 + 2 * this.btnHeight, 85, surface, communication, this.btnWidth, this.btnHeight)
 
         var labelEvent = this.surface.makeLabelField(0, 7 + 0 * this.btnHeight, this.btnWidth, this.btnHeight)
-        this.editor = new Switch(0, 7 + 1 * this.btnHeight, 31, surface, communication, this.btnWidth, this.btnHeight)
+        this.editor = new Button(0, 7 + 1 * this.btnHeight, 31, surface, communication, this.btnWidth, this.btnHeight)
         labelEvent.relateTo(this.editor.button)
-        this.nudge = new Switch(0, 7 + 2 * this.btnHeight, 30, surface, communication, this.btnWidth, this.btnHeight)
+        this.nudge = new Button(0, 7 + 2 * this.btnHeight, 30, surface, communication, this.btnWidth, this.btnHeight)
 
         var labelInst = this.surface.makeLabelField(0, 12 + 0 * this.btnHeight, this.btnWidth, this.btnHeight)
         this.showHide = new Button(0, 12 + 1 * this.btnHeight, 29, surface, communication, this.btnWidth, this.btnHeight)
@@ -68,14 +68,14 @@ export class AtomControl {
         this.left = new Button(25, 2 + 3 * this.btnHeight, 90, surface, communication, this.btnWidth, this.btnHeight)
         this.right = new Button(25, 2 + 4 * this.btnHeight, 102, surface, communication, this.btnWidth, this.btnHeight)
         this.select = new Button(25, 2 + 5 * this.btnHeight, 103, surface, communication, this.btnWidth, this.btnHeight)
-        this.zoom = new Switch(25, 2 + 6 * this.btnHeight, 104, surface, communication, this.btnWidth, this.btnHeight)
+        this.zoom = new Button(25, 2 + 6 * this.btnHeight, 104, surface, communication, this.btnWidth, this.btnHeight)
 
         var labelTransport = this.surface.makeLabelField(25, 13 + 0 * this.btnHeight, this.btnWidth, this.btnHeight);
         this.click = new Switch(25, 13 + 1 * this.btnHeight, 105, surface, communication, this.btnWidth, this.btnHeight);
-        labelTransport.relateTo(this.click.button)
-        this.record = new Switch(25, 13 + 2 * this.btnHeight, 107, surface, communication, this.btnWidth, this.btnHeight);
-        this.start = new Switch(25, 13 + 3 * this.btnHeight, 109, surface, communication, this.btnWidth, this.btnHeight);
-        this.stop = new Switch(25, 13 + 4 * this.btnHeight, 111, surface, communication, this.btnWidth, this.btnHeight);
+        //labelTransport.relateTo(this.click.button) //todo add relates to later
+        this.record = new Button(25, 13 + 2 * this.btnHeight, 107, surface, communication, this.btnWidth, this.btnHeight);
+        this.start = new Button(25, 13 + 3 * this.btnHeight, 109, surface, communication, this.btnWidth, this.btnHeight);
+        this.stop = new Button(25, 13 + 4 * this.btnHeight, 111, surface, communication, this.btnWidth, this.btnHeight);
 
         this.pads = this.makeTriggers(36, 7, 10);
         this.knobs = this.makeKnobStrip(14, 5, 5);
