@@ -35,7 +35,10 @@ var atom = new AtomControl(surface, communication, btnHeight, btnWidth);
 function makeHelperVariables() {
     var variables = {}
     variables.zoomIn = surface.makeCustomValueVariable("zomm in")
-    variables.zoomOut = surface.makeCustomValueVariable("zomm in")
+    variables.zoomOut = surface.makeCustomValueVariable("zomm out")
+    variables.jogLeft = surface.makeCustomValueVariable("zomm in")
+    variables.jogRight = surface.makeCustomValueVariable("zomm out")
+    variables.zoomOn = surface.makeCustomValueVariable("zomm on")
     return variables;
 }
 
@@ -57,6 +60,9 @@ function subscribeTransportFunctions(page: MR_FactoryMappingPage, mainPage: MR_S
     page.makeCommandBinding(atom.start.button.mSurfaceValue, 'Transport', 'Cycle').setSubPage(shiftPage);
     page.makeCommandBinding(atom.stop.button.mSurfaceValue, 'Edit', 'Undo').setSubPage(shiftPage);
     page.makeCommandBinding(atom.record.button.mSurfaceValue, 'File', 'Save').setSubPage(shiftPage);
+
+    page.makeCommandBinding(helperVariables.jogLeft, 'Transport', 'Transport', 'Nudge Cursor Left');
+    page.makeCommandBinding(helperVariables.jogRight, 'Transport', 'Transport', 'Nudge Cursor Right');
 
     page.mHostAccess.mTransport.mValue.mStart.onProcessValueChange = function (activeDevice: MR_ActiveDevice, value: number, diff: number) {
         if (value) {
@@ -96,20 +102,44 @@ function subscribeNavigationFunctions(page: MR_FactoryMappingPage, mainPage: MR_
     page.makeCommandBinding(atom.left.button.mSurfaceValue, 'Nudge', 'Down').setSubPage(nudgePage);
     page.makeCommandBinding(atom.left.button.mSurfaceValue, 'Nudge', 'Up').setSubPage(nudgePage);
 
-    page.makeCommandBinding(helperVariables.zoomIn, 'Zoom', 'Zoom In')
-    page.makeCommandBinding(helperVariables.zoomOut, 'Zoom', 'Zoom Out')
+    page.makeCommandBinding(helperVariables.zoomIn, 'Zoom', 'Zoom In');
+    page.makeCommandBinding(helperVariables.zoomOut, 'Zoom', 'Zoom Out');
+
+    atom.zoom.button.mSurfaceValue.mOnProcessValueChange = function (activeDevice: MR_ActiveDevice, value: number, diff: number) {
+        console.log("zoom btn value: " + value + " diff: " + diff);
+        if (value <= 0)
+            return;
+
+        if (helperVariables.zoomOn.getProcessValue(activeDevice)) {
+            atom.zoom.buttonLampOff(activeDevice);
+            helperVariables.zoomOn.setProcessValue(activeDevice, 0);
+        }
+        else {
+            atom.zoom.buttonLampOn(activeDevice);
+            helperVariables.zoomOn.setProcessValue(activeDevice, 1);
+        }
+
+    }
 
     atom.knobs[4].knob.mSurfaceValue.mOnProcessValueChange = function (activeDevice: MR_ActiveDevice, value: number, diff: number) {
         value *= 100;
         console.log("knob4 value: " + value + " diff: " + diff);
 
-        if (atom.zoom.button.mSurfaceValue.getProcessValue(activeDevice)
-            && value < 1) {
-            helperVariables.zoomIn.setProcessValue(activeDevice, 127)
+        if (helperVariables.zoomOn.getProcessValue(activeDevice)) {
+            if (value < 1) {
+                helperVariables.zoomIn.setProcessValue(activeDevice, 127);
+            }
+            else if (value > 50) {
+                helperVariables.zoomOut.setProcessValue(activeDevice, 127);
+            }
         }
-        else if (atom.zoom.button.mSurfaceValue.getProcessValue(activeDevice)
-            && value > 50) {
-            helperVariables.zoomOut.setProcessValue(activeDevice, 127)
+        else {
+            if (value < 1) {
+                helperVariables.jogRight.setProcessValue(activeDevice, 127);
+            }
+            else if (value > 50) {
+                helperVariables.jogLeft.setProcessValue(activeDevice, 127);
+            }
         }
     }
 }

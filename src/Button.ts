@@ -15,7 +15,7 @@ export class Button {
     }
 
     private onProcessValueChange: (activeDevice: MR_ActiveDevice, value: number, diff: number) => void = (activeDevice, value) => {
-        console.log("button cmd: " + this.command + " value " + value); //TODO doesn't work
+        console.log("button cmd: " + this.command + " value " + value); //TODO doesn't work cuz it is overriden
     }
 
     public buttonLampOn(activeDevice: MR_ActiveDevice) {
