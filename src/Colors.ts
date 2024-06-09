@@ -10,4 +10,5 @@ export class Colors {
     public cyan: [number, number, number] = [0x00, 0x65, 0x58];
     public ltPurple: [number, number, number] = [0x7f, 0x00, 0x58];
     public ltGreen: [number, number, number] = [0x56, 0x65, 0x10];
+    public off: [number, number, number] = [0x00, 0x00, 0x00];
 }

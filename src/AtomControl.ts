@@ -6,11 +6,11 @@ import { Knob } from './Knob';
 
 export class AtomControl {
     /* left side */
-    public setup: Button;
+    public setup: Switch;
     public setLoop: Button;
 
     public editor: Button;
-    public nudge: Button;
+    public nudge: Switch;
 
     public showHide: Button;
     public preset: Button;
@@ -34,20 +34,20 @@ export class AtomControl {
     public start: Switch;
     public stop: Switch;
 
-    public pads: TriggerPad[] = new Array(16);
-    public knobs: Knob[] = new Array(4);
+    public pads: TriggerPad[] = new Array(17); //16 pads starting with id 1 for easier usage
+    public knobs: Knob[] = new Array(5); //4 knobs starting with id 1 for easier usage
 
     constructor(private surface: MR_DeviceSurface, private communication: Communication, private btnHeight: number, private btnWidth: number) {
 
         var labelSong = this.surface.makeLabelField(0, 2 + 0 * this.btnHeight, this.btnWidth, this.btnHeight)
-        this.setup = new Button(0, 2 + 1 * this.btnHeight, 86, surface, communication, this.btnWidth, this.btnHeight)
-        labelSong.relateTo(this.setup.button)
+        this.setup = new Switch(0, 2 + 1 * this.btnHeight, 86, surface, communication, this.btnWidth, this.btnHeight, false)
+        //labelSong.relateTo(this.setup.button) //todo add relates to later
         this.setLoop = new Button(0, 2 + 2 * this.btnHeight, 85, surface, communication, this.btnWidth, this.btnHeight)
 
         var labelEvent = this.surface.makeLabelField(0, 7 + 0 * this.btnHeight, this.btnWidth, this.btnHeight)
         this.editor = new Button(0, 7 + 1 * this.btnHeight, 31, surface, communication, this.btnWidth, this.btnHeight)
         labelEvent.relateTo(this.editor.button)
-        this.nudge = new Button(0, 7 + 2 * this.btnHeight, 30, surface, communication, this.btnWidth, this.btnHeight)
+        this.nudge = new Switch(0, 7 + 2 * this.btnHeight, 30, surface, communication, this.btnWidth, this.btnHeight, false)
 
         var labelInst = this.surface.makeLabelField(0, 12 + 0 * this.btnHeight, this.btnWidth, this.btnHeight)
         this.showHide = new Button(0, 12 + 1 * this.btnHeight, 29, surface, communication, this.btnWidth, this.btnHeight)
@@ -96,7 +96,7 @@ export class AtomControl {
         var note = 0
 
         var labelTab = this.surface.makeLabelField(x, y - 2.5 * this.btnHeight, this.btnWidth, this.btnHeight)
-        var pads = new Array(16);
+        var pads = new Array(17);
         for (var rowIdx = 0; rowIdx < 4; rowIdx++) {
             for (var colIdx = 0; colIdx < 4; colIdx++) {
 

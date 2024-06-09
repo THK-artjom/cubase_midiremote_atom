@@ -1,4 +1,5 @@
 import { AtomControl } from './AtomControl';
+import { Colors } from './Colors';
 import { Communication } from './Communication';
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -56,7 +57,7 @@ function subscribeTransportFunctions(page: MR_FactoryMappingPage) {
     page.makeValueBinding(atom.record.clickState, page.mHostAccess.mTransport.mValue.mRecord);
 
     page.makeCommandBinding(atom.start.click, 'Transport', 'Start');
-    page.makeValueBinding(atom.start.clickState, page.mHostAccess.mTransport.mValue.mStart).mOnValueChange = function (activeDevice : MR_ActiveDevice, activeMapping : MR_ActiveMapping, currValue : number, valueDiff : number){
+    page.makeValueBinding(atom.start.clickState, page.mHostAccess.mTransport.mValue.mStart).mOnValueChange = function (activeDevice: MR_ActiveDevice, activeMapping: MR_ActiveMapping, currValue: number, valueDiff: number) {
         console.log("transport start val test: " + currValue)
     };
 
@@ -75,17 +76,20 @@ function subscribeTransportFunctions(page: MR_FactoryMappingPage) {
     page.makeCommandBinding(helperVariables.jogRight, 'Transport', 'Nudge +1 Frame');
 }
 
-function subscribeNavigationFunctions(page: MR_FactoryMappingPage, mainPage: MR_SubPage, nudgePage: MR_SubPage) {
-    page.makeCommandBinding(atom.left.button.mSurfaceValue, 'Navigate', 'Left').setSubPage(mainPage);
-    page.makeCommandBinding(atom.right.button.mSurfaceValue, 'Navigate', 'Right').setSubPage(mainPage);
-    page.makeCommandBinding(atom.down.button.mSurfaceValue, 'Navigate', 'Down').setSubPage(mainPage);
-    page.makeCommandBinding(atom.up.button.mSurfaceValue, 'Navigate', 'Up').setSubPage(mainPage);
-    page.makeCommandBinding(atom.select.button.mSurfaceValue, 'Navigate', 'Toggle Selection').setSubPage(mainPage);
+function subscribeNavigationFunctions(page: MR_FactoryMappingPage) {
+    page.makeCommandBinding(atom.left.button.mSurfaceValue, 'Navigate', 'Left');
+    page.makeCommandBinding(atom.right.button.mSurfaceValue, 'Navigate', 'Right');
+    page.makeCommandBinding(atom.down.button.mSurfaceValue, 'Navigate', 'Down');
+    page.makeCommandBinding(atom.up.button.mSurfaceValue, 'Navigate', 'Up');
 
-    page.makeCommandBinding(atom.left.button.mSurfaceValue, 'Nudge', 'Left').setSubPage(nudgePage);
-    page.makeCommandBinding(atom.left.button.mSurfaceValue, 'Nudge', 'Right').setSubPage(nudgePage);
-    page.makeCommandBinding(atom.left.button.mSurfaceValue, 'Nudge', 'Down').setSubPage(nudgePage);
-    page.makeCommandBinding(atom.left.button.mSurfaceValue, 'Nudge', 'Up').setSubPage(nudgePage);
+    page.makeCommandBinding(atom.select.button.mSurfaceValue, 'Navigate', 'Toggle Selection');
+
+    page.makeCommandBinding(atom.left.button.mSurfaceValue, 'Nudge', 'Left');
+    page.makeCommandBinding(atom.left.button.mSurfaceValue, 'Nudge', 'Right');
+    page.makeCommandBinding(atom.left.button.mSurfaceValue, 'Nudge', 'Down');
+    page.makeCommandBinding(atom.left.button.mSurfaceValue, 'Nudge', 'Up');
+
+    page.makeCommandBinding(atom.nudge.shiftClick, 'Quantize Category', 'Quantize');
 
     page.makeCommandBinding(helperVariables.zoomIn, 'Zoom', 'Zoom In');
     page.makeCommandBinding(helperVariables.zoomOut, 'Zoom', 'Zoom Out');
@@ -130,23 +134,24 @@ function subscribeNavigationFunctions(page: MR_FactoryMappingPage, mainPage: MR_
 }
 
 function subscribeTrackSetup(page: MR_FactoryMappingPage) {
-    /* page.makeCommandBinding(atom.pads[0].tapTempo, 'Project', 'Tap Tempo') //doesnt work
-     page.makeCommandBinding(surfaceElements.song.tempo, 'Transport', 'Input Tempo') //doesnt work
-     page.makeCommandBinding(surfaceElements.song.delete, 'Edit', 'Delete') //doesnt work
-     page.makeCommandBinding(surfaceElements.song.duplicate, 'Edit', 'Dupicate') //doesnt work
-     page.makeCommandBinding(surfaceElements.song.moveLoopLeft, 'Nudge', 'Loop Range Left')
-     page.makeCommandBinding(surfaceElements.song.moveLoopRight, 'Nudge', 'Loop Range Right')
- 
-     surfaceElements.knobs[2].mSurfaceValue.mOnProcessValueChange = function (activeDevice, value, diff) {
-         if (surfaceElements.song.trackSetupOn.getProcessValue(activeDevice)) {
-             var tempo = surfaceElements.song.tempo.getProcessValue(activeDevice)
-             if (diff > 0)
-                 tempo++
-             else if (diff < 0)
-                 tempo--
-             surfaceElements.song.tempo.setProcessValue(activeDevice, tempo)
-         }
-     }*/
+    page.makeCommandBinding(atom.pads[14].pad.mSurfaceValue, 'Project', 'Tap Tempo');
+    //page.makeCommandBinding(atom.knobs[2].knob.mSurfaceValue, 'Transport', 'Input Tempo'); //doesnt work
+    page.makeCommandBinding(atom.pads[10].pad.mSurfaceValue, 'Edit', 'Delete') 
+    //page.makeCommandBinding(atom.pads[9].pad.mSurfaceValue, 'Edit', 'Dupicate') //doesnt work
+
+    /*page.makeCommandBinding(surfaceElements.song.moveLoopLeft, 'Nudge', 'Loop Range Left')
+    page.makeCommandBinding(surfaceElements.song.moveLoopRight, 'Nudge', 'Loop Range Right')
+*/
+    /*surfaceElements.knobs[2].mSurfaceValue.mOnProcessValueChange = function (activeDevice, value, diff) {
+        if (surfaceElements.song.trackSetupOn.getProcessValue(activeDevice)) {
+            var tempo = surfaceElements.song.tempo.getProcessValue(activeDevice)
+            if (diff > 0)
+                tempo++
+            else if (diff < 0)
+                tempo--
+            surfaceElements.song.tempo.setProcessValue(activeDevice, tempo)
+        }
+    }*/
 
     /* *************  */
 
@@ -200,12 +205,16 @@ function makePageWithDefaults(name: string) {
     var subPageArea = page.makeSubPageArea('subPages');
     var shiftPage = subPageArea.makeSubPage('shiftPage');
     var mainPage = subPageArea.makeSubPage('mainPage');
+
     var songPage = subPageArea.makeSubPage('songPage');
     var nudgePage = subPageArea.makeSubPage('nudgePage');
-
+    var colors = new Colors();
+    
     shiftPage.mOnActivate = function (activeDevice: ActiveDevice, activeMapping: ActiveMapping) {
         console.log("shift page activated");
         atom.shift.buttonLampOn(activeDevice);
+
+        atom.nudge.shift(activeDevice);
 
         atom.click.shift(activeDevice);
         atom.record.shift(activeDevice);
@@ -217,19 +226,64 @@ function makePageWithDefaults(name: string) {
         console.log("main page activated");
         atom.shift.buttonLampOff(activeDevice);
 
+        atom.nudge.unShift(activeDevice);
+
         atom.click.unShift(activeDevice);
         atom.record.unShift(activeDevice);
         atom.start.unShift(activeDevice);
         atom.stop.unShift(activeDevice);
+
+        atom.up.buttonLampOff(activeDevice);
+        atom.down.buttonLampOff(activeDevice);
+        atom.left.buttonLampOff(activeDevice);
+        atom.right.buttonLampOff(activeDevice);
+
+        atom.pads.forEach(pad => {
+            pad.toggleColor(colors.blue, activeDevice)
+        });
+    }
+
+    nudgePage.mOnActivate = function (activeDevice: ActiveDevice, activeMapping: ActiveMapping) {
+        console.log("nudge page activated");
+
+        atom.up.buttonLampOn(activeDevice);
+        atom.down.buttonLampOn(activeDevice);
+        atom.left.buttonLampOn(activeDevice);
+        atom.right.buttonLampOn(activeDevice);
+    }
+
+    songPage.mOnActivate = function (activeDevice: ActiveDevice, activeMapping: ActiveMapping) {
+        console.log("song page activated");
+
+        atom.pads[14].toggleColor(colors.blue, activeDevice);
+        atom.pads[15].toggleColor(colors.off, activeDevice);
+        atom.pads[16].toggleColor(colors.off, activeDevice);
+
+        atom.pads[9].toggleColor(colors.ltGreen, activeDevice);
+        atom.pads[10].toggleColor(colors.red, activeDevice);
+
+        atom.pads[5].toggleColor(colors.off, activeDevice);
+        atom.pads[6].toggleColor(colors.off, activeDevice);
+        atom.pads[7].toggleColor(colors.off, activeDevice);
+        atom.pads[8].toggleColor(colors.off, activeDevice);
+
+        atom.pads[1].toggleColor(colors.off, activeDevice);
+        atom.pads[2].toggleColor(colors.off, activeDevice);
+        atom.pads[3].toggleColor(colors.off, activeDevice);
+        atom.pads[4].toggleColor(colors.off, activeDevice);
     }
 
     page.makeActionBinding(atom.shift.button.mSurfaceValue, shiftPage.mAction.mActivate).setSubPage(mainPage);
     page.makeActionBinding(atom.shift.button.mSurfaceValue, mainPage.mAction.mActivate).setSubPage(shiftPage);
-    page.makeActionBinding(atom.setup.button.mSurfaceValue, songPage.mAction.mActivate).setSubPage(mainPage);
-    page.makeActionBinding(atom.nudge.button.mSurfaceValue, nudgePage.mAction.mActivate).setSubPage(mainPage);
 
-    subscribeNavigationFunctions(page, mainPage, nudgePage)
-    subscribeTransportFunctions(page, mainPage, shiftPage)
+    page.makeActionBinding(atom.setup.click, songPage.mAction.mActivate).setSubPage(mainPage);
+    page.makeActionBinding(atom.setup.click, mainPage.mAction.mActivate).setSubPage(songPage);
+
+    page.makeActionBinding(atom.nudge.click, nudgePage.mAction.mActivate).setSubPage(mainPage);
+    page.makeActionBinding(atom.nudge.click, mainPage.mAction.mActivate).setSubPage(nudgePage);
+
+    subscribeNavigationFunctions(page)
+    subscribeTransportFunctions(page)
 
     subscribeTrackSetup(page);
     return page
