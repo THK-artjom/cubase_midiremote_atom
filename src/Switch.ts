@@ -2,28 +2,34 @@
 //todo: inherit from Button but somehow inheritance is not working for Cubase 13 as Reflect is not suported
 
 export class Switch {
-    private readonly stateVariable: MR_SurfaceCustomValueVariable;
-    private readonly shiftVariable: MR_SurfaceCustomValueVariable;
-    private readonly shiftActive: MR_SurfaceCustomValueVariable;
-    
+    //public readonly stateVariable: MR_SurfaceCustomValueVariable;
+    //private readonly shiftVariable: MR_SurfaceCustomValueVariable;
+    //private readonly shiftActive: MR_SurfaceCustomValueVariable;
+
     public readonly button: MR_Button; //only for the relate to
 
-    constructor(x: number, y: number, private command: number, surface: MR_DeviceSurface, midiInput: MR_DeviceMidiInput, private communication: Communication, btnWidth: number, btnHeight: number) {
-        this.stateVariable = surface.makeCustomValueVariable('button cc ' + command);
-        this.shiftVariable = surface.makeCustomValueVariable('button cc ' + command + 'shift');
-        this.shiftActive = surface.makeCustomValueVariable('button cc ' + command + 'shift active');
+    constructor(x: number, y: number, private command: number, surface: MR_DeviceSurface, private communication: Communication, btnWidth: number, btnHeight: number) {
+        //this.stateVariable = surface.makeCustomValueVariable('button cc ' + command);
+        //this.shiftVariable = surface.makeCustomValueVariable('button cc ' + command + 'shift');
+        //this.shiftActive = surface.makeCustomValueVariable('button cc ' + command + 'shift active');
         this.button = surface.makeButton(x, y, btnWidth, btnHeight);
 
-        this.button.mSurfaceValue.mMidiBinding.setInputPort(midiInput)
-            //.setOutputPort(midiOutput) //will send feedback to button automatically (disabled to be controllable)
-            .bindToControlChange(0, command); //MidiChanel 1 id:0 in nativeMode; midiChanel 10 (id:9) in midiMode
+        this.communication.subscribeToMidiControlChange(this.button, command);
 
-        this.button.mSurfaceValue.mOnProcessValueChange = this.onProcessValueChanged.bind({});
+        //this.button.mSurfaceValue.mOnProcessValueChange = this.onProcessValueChanged.bind({});
 
-        this.stateVariable.mOnProcessValueChange = this.toggleState.bind({});
+        //this.stateVariable.mOnProcessValueChange = this.toggleState.bind({});
     }
 
-    private onProcessValueChanged: (activeDevice: MR_ActiveDevice, value: number, diff: number) => void = (activeDevice, value, diff) => {
+    public buttonLampOn(activeDevice: MR_ActiveDevice) {
+        this.communication.buttonLampOn(activeDevice, this.command);
+    }
+
+    public buttonLampOff(activeDevice: MR_ActiveDevice) {
+        this.communication.buttonLampOff(activeDevice, this.command);
+    }
+
+    /*private onProcessValueChanged: (activeDevice: MR_ActiveDevice, value: number, diff: number) => void = (activeDevice, value, diff) => {
         console.log("switch " + this.command + " value " + value)
         if (value <= 0)
             return;
@@ -60,5 +66,5 @@ export class Switch {
 
     public isToggled(activeDevice: MR_ActiveDevice): boolean {
         return this.stateVariable.getProcessValue(activeDevice) > 0;
-    }
+    }*/
 }

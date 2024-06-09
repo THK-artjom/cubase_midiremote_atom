@@ -21,21 +21,7 @@ deviceDriver.makeDetectionUnit().detectPortPair(midiInput, midiOutput)
 
 var surface = deviceDriver.mSurface
 
-var communication = new Communication(midiOutput);
-
-function toggleStartButton(state: number, activeDevice: MR_ActiveDevice) {
-    if (state)
-        communication.sendMidiControlChange(1, 109, 127, activeDevice)
-    else
-        communication.sendMidiControlChange(1, 109, 0, activeDevice)
-}
-
-function toggleStopButton(state: number, activeDevice: MR_ActiveDevice) {
-    if (state)
-        communication.sendMidiControlChange(1, 111, 127, activeDevice)
-    else
-        communication.sendMidiControlChange(1, 111, 0, activeDevice)
-}
+var communication = new Communication(midiOutput, midiInput);
 
 //----------------------------------------------------------------------------------------------------------------------
 // 2. SURFACE LAYOUT - create control elements and midi bindings
@@ -44,150 +30,88 @@ function toggleStopButton(state: number, activeDevice: MR_ActiveDevice) {
 var btnWidth = 3
 var btnHeight = 1.5
 
-function makeKnobStrip(firstKnobChanel: number, x: number, y: number) {
-    var knobStrip = []
-    var knobSize = 1.2 * btnWidth
+var atom = new AtomControl(surface, communication, btnHeight, btnWidth);
 
-    for (var knobIdx = 0; knobIdx < 4; knobIdx++) {
-        knobStrip[knobIdx + 1] = surface.makeKnob(x + knobIdx * knobSize, y, knobSize, knobSize)
-        knobStrip[knobIdx + 1].mSurfaceValue.mMidiBinding
-            .setInputPort(midiInput)
-            .bindToControlChange(0, firstKnobChanel + knobIdx)
-    }
-    return knobStrip
+function makeHelperVariables() {
+    var variables = {}
+    variables.zoomIn = surface.makeCustomValueVariable("zomm in")
+    variables.zoomOut = surface.makeCustomValueVariable("zomm in")
+    return variables;
 }
 
-var atom = new AtomControl(surface, midiInput, communication, btnHeight, btnWidth);
-
-
-function makeSurfaceElements() {
-    var surfaceElements = {}
-    surfaceElements.knobs = makeKnobStrip(14, 5, 5)
-    return surfaceElements
-}
-
-var surfaceElements = makeSurfaceElements()
-
+var helperVariables = makeHelperVariables();
 //----------------------------------------------------------------------------------------------------------------------
 // 3. HOST MAPPING - create mapping pages and host bindings
 //----------------------------------------------------------------------------------------------------------------------
 
-function subscribeTransportFunctions(page: MR_FactoryMappingPage) {
+function subscribeTransportFunctions(page: MR_FactoryMappingPage, mainPage: MR_SubPage, shiftPage: MR_SubPage) {
 
     /* feedback cubase -> btn colors */
-    page.makeValueBinding(atom.start.stateVariable, page.mHostAccess.mTransport.mValue.mStart)
-    page.makeValueBinding(atom.record.stateVariable, page.mHostAccess.mTransport.mValue.mRecord)
-    page.makeValueBinding(atom.click.stateVariable, page.mHostAccess.mTransport.mValue.mMetronomeActive)
+    page.makeValueBinding(atom.click.button.mSurfaceValue, page.mHostAccess.mTransport.mValue.mMetronomeActive).setTypeToggle().setSubPage(mainPage);
+    page.makeValueBinding(atom.record.button.mSurfaceValue, page.mHostAccess.mTransport.mValue.mRecord).setTypeToggle().setSubPage(mainPage);
+    page.makeCommandBinding(atom.start.button.mSurfaceValue, 'Transport', 'Start').setSubPage(mainPage);
+    page.makeCommandBinding(atom.stop.button.mSurfaceValue, 'Transport', 'Stop').setSubPage(mainPage);
 
     /* command binding atom -> cubase */
-    page.makeCommandBinding(atom.stop.stateVariable, 'Transport', 'Stop')
-    page.makeCommandBinding(atom.start.shiftVariable, 'Transport', 'Cycle')
-    page.makeCommandBinding(atom.stop.shiftVariable, 'Edit', 'Undo')
-    page.makeCommandBinding(atom.record.shiftVariable, 'File', 'Save')
-    /*
-        atom.start.stateVariable.mOnProcessValueChange = function (activeDevice: MR_ActiveDevice, value: number) {
-            console.log("start:" + value)
-            if (value) {
-                toggleStopButton(true, activeDevice)
-                toggleStartButton(false, activeDevice)
-            }
-            else {
-                toggleStopButton(false, activeDevice)
-                toggleStartButton(true, activeDevice)
-            }
-        }.bind({})
-    
-        atom.start.button.mSurfaceValue.mOnProcessValueChange = function (activeDevice: MR_ActiveDevice, value: number) {
-            console.log("btnStart: " + value)
-    
-            if (value == false)
-                return
-    
-            if (surfaceElements.shiftActive.getProcessValue(activeDevice)) {
-                surfaceElements.transport.cycle.setProcessValue(activeDevice, value)
-                return
-            }
-    
-            surfaceElements.transport.start.setProcessValue(activeDevice, 127)
-        }.bind({});
-    
-        surfaceElements.transport.btnStop.mSurfaceValue.mOnProcessValueChange = function (activeDevice: MR_ActiveDevice, value: number) {
-            console.log("btnStop: " + value)
-    
-            if (value == false)
-                return
-    
-            if (surfaceElements.shiftActive.getProcessValue(activeDevice)) {
-                surfaceElements.transport.undo.setProcessValue(activeDevice, value)
-                return
-            }
-    
-            surfaceElements.transport.stop.setProcessValue(activeDevice, 127)
-        }.bind({});
-    */
-}
+    page.makeCommandBinding(atom.click.button.mSurfaceValue, 'Transport', 'Precount On').setSubPage(shiftPage);
+    page.makeCommandBinding(atom.start.button.mSurfaceValue, 'Transport', 'Cycle').setSubPage(shiftPage);
+    page.makeCommandBinding(atom.stop.button.mSurfaceValue, 'Edit', 'Undo').setSubPage(shiftPage);
+    page.makeCommandBinding(atom.record.button.mSurfaceValue, 'File', 'Save').setSubPage(shiftPage);
 
-function subscribeNavigationFunctions(page: MR_FactoryMappingPage) {
-    page.makeCommandBinding(atom.left.stateVariable, 'Navigate', 'Left')
-    page.makeCommandBinding(atom.right.stateVariable, 'Navigate', 'Right')
-    page.makeCommandBinding(atom.down.stateVariable, 'Navigate', 'Down')
-    page.makeCommandBinding(atom.up.stateVariable, 'Navigate', 'Up')
-    /* page.makeCommandBinding(atom.ZoomIn, 'Zoom', 'Zoom In')
-     page.makeCommandBinding(atom.ZoomOut, 'Zoom', 'Zoom Out')*/
-    //page.makeCommandBinding(atom.select.stateVariable, 'Navigate', 'Toggle Selection')
-
-    /*surfaceElements.nav.btnUp.mSurfaceValue.mOnProcessValueChange = function (activeDevice: MR_ActiveDevice, value: number) {
-        if (value == false)
-            return;
-
-        if (surfaceElements.event.nudgeOn.getProcessValue(activeDevice) == 0)
-            surfaceElements.event.nudgeUp.setProcessValue(activeDevice, 127);
-        else
-            surfaceElements.nav.Up.setProcessValue(activeDevice, 127)
-    }.bind({});
-
-    surfaceElements.nav.btnDown.mSurfaceValue.mOnProcessValueChange = function (activeDevice: MR_ActiveDevice, value): number {
-        if (value == false)
-            return;
-
-        if (surfaceElements.event.nudgeOn.getProcessValue(activeDevice) == 1)
-            surfaceElements.event.nudgeDown.setProcessValue(activeDevice, 127);
-        else
-            surfaceElements.nav.Down.setProcessValue(activeDevice, 127)
-    }.bind({});
-
-    surfaceElements.nav.btnLeft.mSurfaceValue.mOnProcessValueChange = function (activeDevice: MR_ActiveDevice, value: number) {
-        if (value == false)
-            return;
-
-        if (surfaceElements.event.nudgeOn.getProcessValue(activeDevice) == 1)
-            surfaceElements.event.nudgeLeft.setProcessValue(activeDevice, 127);
-        else
-            surfaceElements.nav.Left.setProcessValue(activeDevice, 127)
-    }.bind({});
-
-    surfaceElements.nav.btnRight.mSurfaceValue.mOnProcessValueChange = function (activeDevice: MR_ActiveDevice, value: number) {
-        if (value == false)
-            return;
-
-        if (surfaceElements.event.nudgeOn.getProcessValue(activeDevice) == 1)
-            surfaceElements.event.nudgeRight.setProcessValue(activeDevice, 127);
-        else
-            surfaceElements.nav.Right.setProcessValue(activeDevice, 127)
-    }.bind({});
-
-    surfaceElements.knobs[4].mSurfaceValue.mOnProcessValueChange = function (activeDevice, value, diff) {
-        console.log("knob4 value: " + value + " diff: " + diff)
-
-        if (surfaceElements.nav.ZoomOn.getProcessValue(activeDevice)
-            && value < 0.5) {
-            surfaceElements.nav.ZoomIn.setProcessValue(activeDevice, 127)
+    page.mHostAccess.mTransport.mValue.mStart.onProcessValueChange = function (activeDevice: MR_ActiveDevice, value: number, diff: number) {
+        if (value) {
+            console.log("Cubase stared playing");
+            atom.start.buttonLampOff(activeDevice);
+            atom.stop.buttonLampOn(activeDevice);
         }
-        else if (surfaceElements.nav.ZoomOn.getProcessValue(activeDevice)
-            && value > 0.5) {
-            surfaceElements.nav.ZoomOut.setProcessValue(activeDevice, 127)
+        else {
+            console.log("Cubase stopped playing");
+            atom.start.buttonLampOn(activeDevice);
+            atom.stop.buttonLampOff(activeDevice);
+        }
+    }
+
+    /*
+    page.mHostAccess.mTransport.mValue.mStop.onProcessValueChange = function (activeDevice: MR_ActiveDevice, value: number, diff: number) {
+        if (value) {
+            atom.start.buttonLampOn(activeDevice);
+            atom.stop.buttonLampOff(activeDevice);
+        }
+        else {
+            atom.start.buttonLampOff(activeDevice);
+            atom.stop.buttonLampOn(activeDevice);
         }
     }*/
+}
+
+function subscribeNavigationFunctions(page: MR_FactoryMappingPage, mainPage: MR_SubPage, nudgePage: MR_SubPage) {
+    page.makeCommandBinding(atom.left.button.mSurfaceValue, 'Navigate', 'Left').setSubPage(mainPage);
+    page.makeCommandBinding(atom.right.button.mSurfaceValue, 'Navigate', 'Right').setSubPage(mainPage);
+    page.makeCommandBinding(atom.down.button.mSurfaceValue, 'Navigate', 'Down').setSubPage(mainPage);
+    page.makeCommandBinding(atom.up.button.mSurfaceValue, 'Navigate', 'Up').setSubPage(mainPage);
+    page.makeCommandBinding(atom.select.button.mSurfaceValue, 'Navigate', 'Toggle Selection').setSubPage(mainPage);
+
+    page.makeCommandBinding(atom.left.button.mSurfaceValue, 'Nudge', 'Left').setSubPage(nudgePage);
+    page.makeCommandBinding(atom.left.button.mSurfaceValue, 'Nudge', 'Right').setSubPage(nudgePage);
+    page.makeCommandBinding(atom.left.button.mSurfaceValue, 'Nudge', 'Down').setSubPage(nudgePage);
+    page.makeCommandBinding(atom.left.button.mSurfaceValue, 'Nudge', 'Up').setSubPage(nudgePage);
+
+    page.makeCommandBinding(helperVariables.zoomIn, 'Zoom', 'Zoom In')
+    page.makeCommandBinding(helperVariables.zoomOut, 'Zoom', 'Zoom Out')
+
+    atom.knobs[4].knob.mSurfaceValue.mOnProcessValueChange = function (activeDevice: MR_ActiveDevice, value: number, diff: number) {
+        value *= 100;
+        console.log("knob4 value: " + value + " diff: " + diff);
+
+        if (atom.zoom.button.mSurfaceValue.getProcessValue(activeDevice)
+            && value < 1) {
+            helperVariables.zoomIn.setProcessValue(activeDevice, 127)
+        }
+        else if (atom.zoom.button.mSurfaceValue.getProcessValue(activeDevice)
+            && value > 50) {
+            helperVariables.zoomOut.setProcessValue(activeDevice, 127)
+        }
+    }
 }
 
 /**
@@ -260,16 +184,35 @@ function subscribeTrackSetup(page: MR_FactoryMappingPage) {
 }
 
 function makePageWithDefaults(name: string) {
-    var page = deviceDriver.mMapping.makePage(name)
-    subscribeNavigationFunctions(page)
-    subscribeTransportFunctions(page)
-    subscribeTrackSetup(page)
-    /*
-        page.makeCommandBinding(surfaceElements.event.nudgeLeft, 'Nudge', 'Left')
-        page.makeCommandBinding(surfaceElements.event.nudgeRight, 'Nudge', 'Right')
-        page.makeCommandBinding(surfaceElements.event.nudgeDown, 'Nudge', 'Down')
-        page.makeCommandBinding(surfaceElements.event.nudgeUp, 'Nudge', 'Up')
-    */
+    var page = deviceDriver.mMapping.makePage(name);
+    var subPageArea = page.makeSubPageArea('subPages');
+    var shiftPage = subPageArea.makeSubPage('shiftPage');
+    var mainPage = subPageArea.makeSubPage('mainPage');
+    var songPage = subPageArea.makeSubPage('songPage');
+    var nudgePage = subPageArea.makeSubPage('nudgePage');
+
+    shiftPage.mOnActivate = function (activeDevice: ActiveDevice, activeMapping: ActiveMapping) {
+        console.log("shift page activated");
+        atom.shift.buttonLampOn(activeDevice);
+        atom.record.buttonLampOn(activeDevice);
+        atom.start.buttonLampOn(activeDevice);
+        atom.stop.buttonLampOn(activeDevice);
+    }
+
+    mainPage.mOnActivate = function (activeDevice: ActiveDevice, activeMapping: ActiveMapping) {
+        console.log("main page activated");
+        atom.shift.buttonLampOff(activeDevice);
+    }
+
+    page.makeActionBinding(atom.shift.button.mSurfaceValue, shiftPage.mAction.mActivate).setSubPage(mainPage);
+    page.makeActionBinding(atom.shift.button.mSurfaceValue, mainPage.mAction.mActivate).setSubPage(shiftPage);
+    page.makeActionBinding(atom.setup.button.mSurfaceValue, songPage.mAction.mActivate).setSubPage(mainPage);
+    page.makeActionBinding(atom.nudge.button.mSurfaceValue, nudgePage.mAction.mActivate).setSubPage(mainPage);
+
+    subscribeNavigationFunctions(page, mainPage, nudgePage)
+    subscribeTransportFunctions(page, mainPage, shiftPage)
+
+    subscribeTrackSetup(page);
     return page
 }
 

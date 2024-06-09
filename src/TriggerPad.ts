@@ -12,16 +12,13 @@ export class TriggerPad {
 
     public pad: MR_TriggerPad //only for the relate to
 
-    constructor(x: number, y: number, private note: number, surface: MR_DeviceSurface, midiInput: MR_DeviceMidiInput, communication: Communication, triggerSize: number) {
+    constructor(x: number, y: number, private note: number, surface: MR_DeviceSurface, communication: Communication, triggerSize: number) {
         this.note = note;
         this.communication = communication;
         this.colors = new Colors();
 
         this.pad = surface.makeTriggerPad(x, y, triggerSize, triggerSize);
-        this.pad.mSurfaceValue.mMidiBinding
-            .setInputPort(midiInput)
-            //.setOutputPort(midiOutput)
-            .bindToNote(0, note); //chanel 10 (id:9) C1 = 36
+        communication.subscribeToMidiNote(this.pad, note);
         console.log('created binding to note: ' + note);
 
         this.red = surface.makeCustomValueVariable('pad ' + note + ' red');

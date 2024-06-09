@@ -1,9 +1,7 @@
 export class Communication {
-    private midiOutput: MR_DeviceMidiOutput;
-
-    constructor(midiOutput: MR_DeviceMidiOutput) {
-        this.midiOutput = midiOutput;
+    constructor(private midiOutput: MR_DeviceMidiOutput, private midiInput: MR_DeviceMidiInput) {
     }
+
     /**
      * @param {number} cc chanel code 1-16
      * @param {number} note 0-127 60=C1
@@ -60,5 +58,25 @@ export class Communication {
 
         this.midiOutput.sendMidi(activeDevice, [chanelValue, control, value]);
         console.log("send midi note Off chanel " + chanel + " control " + control + "  value  " + value);
+    }
+
+    public subscribeToMidiControlChange(button: MR_SurfaceElement, command: number) {
+        button.mSurfaceValue.mMidiBinding.setInputPort(this.midiInput)
+            //.setOutputPort(communication.midiOutput) //will send feedback to button automatically (disabled to be controllable)
+            .bindToControlChange(0, command); //MidiChanel 1 id:0 in nativeMode; midiChanel 10 (id:9) in midiMode
+    }
+
+    public buttonLampOn(activeDevice: MR_ActiveDevice, command: number) {
+        this.sendMidiControlChange(1, command, 127, activeDevice);
+    }
+
+    public buttonLampOff(activeDevice: MR_ActiveDevice, command: number) {
+        this.sendMidiControlChange(1, command, 0, activeDevice);
+    }
+
+    public subscribeToMidiNote(pad: any, note: number) {
+        pad.mSurfaceValue.mMidiBinding
+            .setInputPort(this.midiInput)
+            .bindToNote(0, note); //chanel 10 (id:9) C1 = 36
     }
 }
