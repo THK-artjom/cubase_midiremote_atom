@@ -137,67 +137,14 @@ function subscribeTrackSetup(page: MR_FactoryMappingPage) {
     page.makeCommandBinding(atom.pads[14].pad.mSurfaceValue, 'Project', 'Tap Tempo');
     //page.makeCommandBinding(atom.knobs[2].knob.mSurfaceValue, 'Transport', 'Input Tempo'); //doesnt work
     page.makeCommandBinding(atom.pads[10].pad.mSurfaceValue, 'Edit', 'Delete') 
+    
+    page.makeCommandBinding(atom.pads[11].pad.mSurfaceValue, 'Process Logical Preset', 'Transform Velocity -10%') 
+    page.makeCommandBinding(atom.pads[12].pad.mSurfaceValue, 'Process Logical Preset', 'Transform Velocity +10%') 
+
     //page.makeCommandBinding(atom.pads[9].pad.mSurfaceValue, 'Edit', 'Dupicate') //doesnt work
 
     /*page.makeCommandBinding(surfaceElements.song.moveLoopLeft, 'Nudge', 'Loop Range Left')
-    page.makeCommandBinding(surfaceElements.song.moveLoopRight, 'Nudge', 'Loop Range Right')
-*/
-    /*surfaceElements.knobs[2].mSurfaceValue.mOnProcessValueChange = function (activeDevice, value, diff) {
-        if (surfaceElements.song.trackSetupOn.getProcessValue(activeDevice)) {
-            var tempo = surfaceElements.song.tempo.getProcessValue(activeDevice)
-            if (diff > 0)
-                tempo++
-            else if (diff < 0)
-                tempo--
-            surfaceElements.song.tempo.setProcessValue(activeDevice, tempo)
-        }
-    }*/
-
-    /* *************  */
-
-    /*surfaceElements.triggers[13].state.mSurfaceValue.mOnProcessValueChange = function (activeDevice: MR_ActiveDevice, value: number, diff: number) {
-        console.log("Pad [13]" + value)
-        if (surfaceElements.song.trackSetupOn.getProcessValue(activeDevice))
-            surfaceElements.song.browser.setProcessValue(activeDevice, 127)
-    }
-
-    surfaceElements.triggers[14].state.mSurfaceValue.mOnProcessValueChange = function (activeDevice: MR_ActiveDevice, value: number) {
-        if (surfaceElements.song.trackSetupOn.getProcessValue(activeDevice))
-            surfaceElements.song.tempo.setProcessValue(activeDevice, 1)
-    }
-
-    surfaceElements.triggers[15].state.mSurfaceValue.mOnProcessValueChange = function (activeDevice: MR_ActiveDevice, value: number) {
-        if (surfaceElements.song.setLoop.getProcessValue(activeDevice))
-            surfaceElements.song.moveLoopLeft.setProcessValue(activeDevice, 127)
-    }
-
-    surfaceElements.triggers[16].state.mSurfaceValue.mOnProcessValueChange = function (activeDevice: MR_ActiveDevice, value: number) {
-        if (surfaceElements.song.setLoop.getProcessValue(activeDevice))
-            surfaceElements.song.moveLoopRight.setProcessValue(activeDevice, 127)
-    }*/
-
-    /* *************  */
-    /*surfaceElements.triggers[9].state.mSurfaceValue.mOnProcessValueChange = function (activeDevice: MR_ActiveDevice, value: number) {
-        if (surfaceElements.song.trackSetupOn.getProcessValue(activeDevice))
-            surfaceElements.song.duplicate.setProcessValue(activeDevice, 127)
-    }
-
-    surfaceElements.triggers[10].state.mSurfaceValue.mOnProcessValueChange = function (activeDevice: MR_ActiveDevice, value: number) {
-        if (surfaceElements.song.trackSetupOn.getProcessValue(activeDevice))
-            surfaceElements.song.delete.setProcessValue(activeDevice, 127)
-    }
-
-    surfaceElements.triggers[11].state.mSurfaceValue.mOnProcessValueChange = function (activeDevice: MR_ActiveDevice, value: number) {
-        if (surfaceElements.song.trackSetupOn.getProcessValue(activeDevice))
-            surfaceElements.song.velocityMinus.setProcessValue(activeDevice, 127)
-    }
-
-    surfaceElements.triggers[12].state.mSurfaceValue.mOnProcessValueChange = function (activeDevice: MR_ActiveDevice, value: number) {
-        if (surfaceElements.song.trackSetupOn.getProcessValue(activeDevice))
-            surfaceElements.song.velocityPlus.setProcessValue(activeDevice, 127)
-    }*/
-
-    /* *************  */
+    page.makeCommandBinding(surfaceElements.song.moveLoopRight, 'Nudge', 'Loop Range Right')*/
 }
 
 function makePageWithDefaults(name: string) {
@@ -261,6 +208,8 @@ function makePageWithDefaults(name: string) {
 
         atom.pads[9].toggleColor(colors.ltGreen, activeDevice);
         atom.pads[10].toggleColor(colors.red, activeDevice);
+        atom.pads[11].toggleColor(colors.ltPurple, activeDevice);
+        atom.pads[12].toggleColor(colors.ltPurple, activeDevice);
 
         atom.pads[5].toggleColor(colors.off, activeDevice);
         atom.pads[6].toggleColor(colors.off, activeDevice);
