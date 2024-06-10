@@ -135,13 +135,20 @@ function subscribeNavigationFunctions(page: MR_FactoryMappingPage) {
 
 function subscribeTrackSetup(page: MR_FactoryMappingPage) {
     page.makeCommandBinding(atom.pads[14].pad.mSurfaceValue, 'Project', 'Tap Tempo');
-    //page.makeCommandBinding(atom.knobs[2].knob.mSurfaceValue, 'Transport', 'Input Tempo'); //doesnt work
-    page.makeCommandBinding(atom.pads[10].pad.mSurfaceValue, 'Edit', 'Delete') 
-    
-    page.makeCommandBinding(atom.pads[11].pad.mSurfaceValue, 'Process Logical Preset', 'Transform Velocity -10%') 
-    page.makeCommandBinding(atom.pads[12].pad.mSurfaceValue, 'Process Logical Preset', 'Transform Velocity +10%') 
 
-    //page.makeCommandBinding(atom.pads[9].pad.mSurfaceValue, 'Edit', 'Dupicate') //doesnt work
+    page.makeCommandBinding(atom.pads[9].pad.mSurfaceValue, 'Edit', 'Duplicate') //ctrl+d does not work
+    page.makeCommandBinding(atom.pads[10].pad.mSurfaceValue, 'Edit', 'Delete')
+    page.makeCommandBinding(atom.pads[11].pad.mSurfaceValue, 'Process Logical Preset', 'Transform Velocity -10%')
+    page.makeCommandBinding(atom.pads[12].pad.mSurfaceValue, 'Process Logical Preset', 'Transform Velocity +10%')
+
+    atom.knobs[2].knob.mSurfaceValue.mOnProcessValueChange = function (activeDevice: MR_ActiveDevice, value: number, diff: number) {
+        value *= 100;
+        console.log("knob4 value: " + value + " diff: " + diff);
+        if (atom.setup.clickState.getProcessValue(activeDevice))
+            //https://forums.steinberg.net/t/key-command-for-insert-tempo-at-cursor/100329/16
+            //page.mHostAccess.mTransport.mTimeDisplay.setTempoBPM(activeMapping,)
+            return;
+    }
 
     /*page.makeCommandBinding(surfaceElements.song.moveLoopLeft, 'Nudge', 'Loop Range Left')
     page.makeCommandBinding(surfaceElements.song.moveLoopRight, 'Nudge', 'Loop Range Right')*/
@@ -156,7 +163,7 @@ function makePageWithDefaults(name: string) {
     var songPage = subPageArea.makeSubPage('songPage');
     var nudgePage = subPageArea.makeSubPage('nudgePage');
     var colors = new Colors();
-    
+
     shiftPage.mOnActivate = function (activeDevice: ActiveDevice, activeMapping: ActiveMapping) {
         console.log("shift page activated");
         atom.shift.buttonLampOn(activeDevice);
