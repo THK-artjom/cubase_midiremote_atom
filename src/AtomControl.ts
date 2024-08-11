@@ -7,13 +7,13 @@ import { Knob } from './Knob';
 export class AtomControl {
     /* left side */
     public setup: Switch;
-    public setLoop: Button;
+    public setLoop: Switch;
 
     public editor: Button;
     public nudge: Switch;
 
     public showHide: Button;
-    public preset: Button;
+    public preset: Switch; //yellow and blue 27/28
     public bank: Button;
 
     public fullLevel: Button;
@@ -31,7 +31,7 @@ export class AtomControl {
 
     public click: Switch;
     public record: Switch;
-    public start: Switch;
+    public start: Switch; //green and light blue 109/110
     public stop: Switch;
 
     public pads: TriggerPad[] = new Array(17); //16 pads starting with id 1 for easier usage
@@ -42,28 +42,28 @@ export class AtomControl {
         var labelSong = this.surface.makeLabelField(0, 2 + 0 * this.btnHeight, this.btnWidth, this.btnHeight)
         this.setup = new Switch(0, 2 + 1 * this.btnHeight, 86, surface, communication, this.btnWidth, this.btnHeight, false)
         //labelSong.relateTo(this.setup.button) //todo add relates to later
-        this.setLoop = new Button(0, 2 + 2 * this.btnHeight, 85, surface, communication, this.btnWidth, this.btnHeight)
+        this.setLoop = new Switch(0, 2 + 2 * this.btnHeight, 85, surface, communication, this.btnWidth, this.btnHeight, true)
 
         var labelEvent = this.surface.makeLabelField(0, 7 + 0 * this.btnHeight, this.btnWidth, this.btnHeight)
         this.editor = new Button(0, 7 + 1 * this.btnHeight, 31, surface, communication, this.btnWidth, this.btnHeight)
-        labelEvent.relateTo(this.editor.button)
+        //labelEvent.relateTo(this.editor.button)
         this.nudge = new Switch(0, 7 + 2 * this.btnHeight, 30, surface, communication, this.btnWidth, this.btnHeight, false)
 
         var labelInst = this.surface.makeLabelField(0, 12 + 0 * this.btnHeight, this.btnWidth, this.btnHeight)
         this.showHide = new Button(0, 12 + 1 * this.btnHeight, 29, surface, communication, this.btnWidth, this.btnHeight)
-        labelInst.relateTo(this.showHide.button)
-        this.preset = new Button(0, 12 + 2 * this.btnHeight, 27, surface, communication, this.btnWidth, this.btnHeight)
+        //labelInst.relateTo(this.showHide.button)
+        this.preset = new Switch(0, 12 + 2 * this.btnHeight, 27, surface, communication, this.btnWidth, this.btnHeight, true)
         this.bank = new Button(0, 12 + 3 * this.btnHeight, 26, surface, communication, this.btnWidth, this.btnHeight)
 
         var labelMode = this.surface.makeLabelField(0, 18 + 0 * this.btnHeight, this.btnWidth, this.btnHeight)
         this.fullLevel = new Button(0, 18 + 1 * this.btnHeight, 25, surface, communication, this.btnWidth, this.btnHeight)
-        labelMode.relateTo(this.fullLevel.button)
+        //labelMode.relateTo(this.fullLevel.button)
         this.noteRepeat = new Button(0, 18 + 2 * this.btnHeight, 24, surface, communication, this.btnWidth, this.btnHeight)
         this.shift = new Button(0, 21.5 + 1 * this.btnHeight, 32, surface, communication, this.btnWidth, this.btnHeight)
 
         var labelNav = this.surface.makeLabelField(25, 2 + 0 * this.btnHeight, this.btnWidth, this.btnHeight)
         this.up = new Button(25, 2 + 1 * this.btnHeight, 87, surface, communication, this.btnWidth, this.btnHeight)
-        labelNav.relateTo(this.up.button)
+        //labelNav.relateTo(this.up.button)
         this.down = new Button(25, 2 + 2 * this.btnHeight, 89, surface, communication, this.btnWidth, this.btnHeight)
         this.left = new Button(25, 2 + 3 * this.btnHeight, 90, surface, communication, this.btnWidth, this.btnHeight)
         this.right = new Button(25, 2 + 4 * this.btnHeight, 102, surface, communication, this.btnWidth, this.btnHeight)

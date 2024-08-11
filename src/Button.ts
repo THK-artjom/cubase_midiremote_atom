@@ -3,7 +3,7 @@ import { Communication } from "./Communication";
 export class Button {
     //public stateVariable: MR_SurfaceCustomValueVariable;
 
-    public readonly button: MR_Button; //only for the relate to
+    private readonly button: MR_Button; //only for the relate to
 
     constructor(x: number, y: number, private command: number, surface: MR_DeviceSurface, private communication: Communication, btnWidth: number, btnHeight: number) {
         //this.stateVariable = surface.makeCustomValueVariable('button cc ' + command);

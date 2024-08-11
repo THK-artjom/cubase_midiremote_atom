@@ -150,8 +150,8 @@ function subscribeTrackSetup(page: MR_FactoryMappingPage) {
             return;
     }
 
-    /*page.makeCommandBinding(surfaceElements.song.moveLoopLeft, 'Nudge', 'Loop Range Left')
-    page.makeCommandBinding(surfaceElements.song.moveLoopRight, 'Nudge', 'Loop Range Right')*/
+    page.makeCommandBinding(atom.pads[15].pad.mSurfaceValue, 'Nudge', 'Loop Range Left') //to test
+    page.makeCommandBinding(atom.pads[16].pad.mSurfaceValue, 'Nudge', 'Loop Range Right') //To test
 }
 
 function makePageWithDefaults(name: string) {
@@ -162,6 +162,7 @@ function makePageWithDefaults(name: string) {
 
     var songPage = subPageArea.makeSubPage('songPage');
     var nudgePage = subPageArea.makeSubPage('nudgePage');
+    var setLoopPage = subPageArea.makeSubPage('setLoopPage');
     var colors = new Colors();
 
     shiftPage.mOnActivate = function (activeDevice: ActiveDevice, activeMapping: ActiveMapping) {
@@ -169,6 +170,7 @@ function makePageWithDefaults(name: string) {
         atom.shift.buttonLampOn(activeDevice);
 
         atom.nudge.shift(activeDevice);
+        atom.preset.shift(activeDevice);
 
         atom.click.shift(activeDevice);
         atom.record.shift(activeDevice);
@@ -181,6 +183,7 @@ function makePageWithDefaults(name: string) {
         atom.shift.buttonLampOff(activeDevice);
 
         atom.nudge.unShift(activeDevice);
+        atom.preset.unShift(activeDevice);
 
         atom.click.unShift(activeDevice);
         atom.record.unShift(activeDevice);
@@ -209,6 +212,7 @@ function makePageWithDefaults(name: string) {
     songPage.mOnActivate = function (activeDevice: ActiveDevice, activeMapping: ActiveMapping) {
         console.log("song page activated");
 
+        atom.pads[13].toggleColor(colors.off, activeDevice);
         atom.pads[14].toggleColor(colors.blue, activeDevice);
         atom.pads[15].toggleColor(colors.off, activeDevice);
         atom.pads[16].toggleColor(colors.off, activeDevice);
@@ -217,6 +221,30 @@ function makePageWithDefaults(name: string) {
         atom.pads[10].toggleColor(colors.red, activeDevice);
         atom.pads[11].toggleColor(colors.ltPurple, activeDevice);
         atom.pads[12].toggleColor(colors.ltPurple, activeDevice);
+
+        atom.pads[5].toggleColor(colors.off, activeDevice);
+        atom.pads[6].toggleColor(colors.off, activeDevice);
+        atom.pads[7].toggleColor(colors.off, activeDevice);
+        atom.pads[8].toggleColor(colors.off, activeDevice);
+
+        atom.pads[1].toggleColor(colors.off, activeDevice);
+        atom.pads[2].toggleColor(colors.off, activeDevice);
+        atom.pads[3].toggleColor(colors.off, activeDevice);
+        atom.pads[4].toggleColor(colors.off, activeDevice);
+    }
+
+    setLoopPage.mOnActivate = function (activeDevice: ActiveDevice, activeMapping: ActiveMapping) {
+        console.log("set loop page activated");
+
+        atom.pads[13].toggleColor(colors.off, activeDevice);
+        atom.pads[14].toggleColor(colors.off, activeDevice);
+        atom.pads[15].toggleColor(colors.ltPurple, activeDevice);
+        atom.pads[16].toggleColor(colors.ltPurple, activeDevice);
+
+        atom.pads[9].toggleColor(colors.off, activeDevice);
+        atom.pads[10].toggleColor(colors.off, activeDevice);
+        atom.pads[11].toggleColor(colors.off, activeDevice);
+        atom.pads[12].toggleColor(colors.off, activeDevice);
 
         atom.pads[5].toggleColor(colors.off, activeDevice);
         atom.pads[6].toggleColor(colors.off, activeDevice);
@@ -238,10 +266,13 @@ function makePageWithDefaults(name: string) {
     page.makeActionBinding(atom.nudge.click, nudgePage.mAction.mActivate).setSubPage(mainPage);
     page.makeActionBinding(atom.nudge.click, mainPage.mAction.mActivate).setSubPage(nudgePage);
 
+    page.makeActionBinding(atom.setLoop.click, setLoopPage.mAction.mActivate).setSubPage(mainPage);
+    page.makeActionBinding(atom.setLoop.click, mainPage.mAction.mActivate).setSubPage(setLoopPage);
+
     subscribeNavigationFunctions(page)
     subscribeTransportFunctions(page)
-
     subscribeTrackSetup(page);
+    
     return page
 }
 
